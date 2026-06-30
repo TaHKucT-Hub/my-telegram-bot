@@ -1,17 +1,23 @@
+import os
 import sqlite3
 import asyncio
+import random
+from datetime import datetime, timedelta
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from datetime import datetime, timedelta
-import random
 
 # ============================================
-# 1. ТОКЕН БОТА (вставь свой!)
+# 1. ПОРТ ДЛЯ RENDER (ОБЯЗАТЕЛЬНО!)
+# ============================================
+PORT = int(os.environ.get("PORT", 10000))
+
+# ============================================
+# 2. ТОКЕН БОТА (ВСТАВЬ СВОЙ!)
 # ============================================
 TOKEN = "8952774961:AAE7jBZ2dpam5Tk45ZPnaNUmw3oRd-58LSI"
 
 # ============================================
-# 2. ПРИВЕТСТВЕННОЕ СООБЩЕНИЕ
+# 3. ПРИВЕТСТВИЕ
 # ============================================
 WELCOME_TEXT = """💪 ПРИВЕТ! ЭТО БОТ ДЛЯ ОТЖИМАНИЙ!
 
@@ -28,7 +34,14 @@ WELCOME_TEXT = """💪 ПРИВЕТ! ЭТО БОТ ДЛЯ ОТЖИМАНИЙ!
 🏆 СОРЕВНУЙСЯ С ДРУЗЬЯМИ!"""
 
 # ============================================
-# 3. ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ
+# 4. ПЕРСОНАЛЬНЫЕ ПРИВЕТСТВИЯ (ПО ID)
+# ============================================
+GREETINGS = {
+    # Пример: 123456789: "🤣 Саня, ну ты и лох! Купил доску и не отжимаешься!",
+}
+
+# ============================================
+# 5. ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ
 # ============================================
 conn = sqlite3.connect("pushups.db")
 cursor = conn.cursor()
@@ -45,20 +58,22 @@ CREATE TABLE IF NOT EXISTS users (
 conn.commit()
 
 # ============================================
-# 4. СОЗДАЁМ БОТА
+# 6. СОЗДАЁМ БОТА
 # ============================================
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 # ============================================
-# 5. КОМАНДА /start
+# 7. КОМАНДА /start
 # ============================================
 @dp.message(Command("start"))
 async def start(message: types.Message):
-    await message.answer(WELCOME_TEXT)
+    user_id = message.from_user.id
+    greeting = GREETINGS.get(user_id, WELCOME_TEXT)
+    await message.answer(greeting)
 
 # ============================================
-# 6. КОМАНДА /top - ТАБЛИЦА ЛИДЕРОВ
+# 8. КОМАНДА /top - ТАБЛИЦА ЛИДЕРОВ
 # ============================================
 @dp.message(Command("top"))
 async def show_top(message: types.Message):
@@ -126,7 +141,7 @@ async def show_top(message: types.Message):
     await message.answer(msg, parse_mode="Markdown")
 
 # ============================================
-# 7. КОМАНДА /mystats - МОЯ СТАТИСТИКА
+# 9. КОМАНДА /mystats - МОЯ СТАТИСТИКА
 # ============================================
 @dp.message(Command("mystats"))
 async def my_stats(message: types.Message):
@@ -151,7 +166,7 @@ async def my_stats(message: types.Message):
     )
 
 # ============================================
-# 8. КОМАНДА /today - РЕЗУЛЬТАТЫ ЗА СЕГОДНЯ
+# 10. КОМАНДА /today - РЕЗУЛЬТАТЫ ЗА СЕГОДНЯ
 # ============================================
 @dp.message(Command("today"))
 async def today_stats(message: types.Message):
@@ -178,7 +193,7 @@ async def today_stats(message: types.Message):
     await message.answer(msg, parse_mode="Markdown")
 
 # ============================================
-# 9. КОМАНДА /reset - СБРОСИТЬ МОИ РЕЗУЛЬТАТЫ
+# 11. КОМАНДА /reset - СБРОСИТЬ МОИ РЕЗУЛЬТАТЫ
 # ============================================
 @dp.message(Command("reset"))
 async def reset_stats(message: types.Message):
@@ -188,7 +203,7 @@ async def reset_stats(message: types.Message):
     await message.answer("🔄 ВСЕ ТВОИ ОТЖИМАНИЯ СБРОШЕНЫ!")
 
 # ============================================
-# 10. ОБРАБОТКА ЛЮБЫХ СООБЩЕНИЙ (ЧИСЛА)
+# 12. ОБРАБОТКА ЛЮБЫХ СООБЩЕНИЙ (ЧИСЛА)
 # ============================================
 @dp.message()
 async def handle_numbers(message: types.Message):
@@ -274,11 +289,12 @@ async def handle_numbers(message: types.Message):
         )
 
 # ============================================
-# 11. ЗАПУСК БОТА
+# 13. ЗАПУСК БОТА
 # ============================================
 async def main():
     print("🚀 БОТ ЗАПУЩЕН!")
-    print("📱 ОТПРАВЛЯЙ ЧИСЛА: 30 ИЛИ 17 13 15")
+    print(f"📱 ОТПРАВЛЯЙ ЧИСЛА: 30 ИЛИ 17 13 15")
+    print(f"🔌 ПОРТ: {PORT}")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
