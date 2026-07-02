@@ -7,12 +7,12 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
 # ============================================
-# 1. ТОКЕН БОТА (ВСТАВЬ СВОЙ!)
+# 1. ТОКЕН БОТА
 # ============================================
 TOKEN = "8952774961:AAE7jBZ2dpam5Tk45ZPnaNUmw3oRd-58LSI"
 
 # ============================================
-# 2. ID АДМИНИСТРАТОРА (ВСТАВЬ СВОЙ!)
+# 2. ID АДМИНИСТРАТОРА
 # ============================================
 ADMIN_ID = 123456789  # ЗАМЕНИ НА СВОЙ ID!
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS users (
 conn.commit()
 
 # ============================================
-# 4. СОЗДАЁМ БОТА
+# 4. БОТ
 # ============================================
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -59,11 +59,6 @@ MOTIVATION_PHRASES = [
     "🏋️ Ты настоящий атлет!",
     "💎 Ты алмаз! Оттачивай мастерство!",
     "🔥 Ты горишь! Продолжай жечь!",
-    "💪 Твоя сила растёт с каждым разом!",
-    "🎯 Ты точен, как снайпер!",
-    "🏆 Ты ставишь рекорды!",
-    "⚡ Ты энергия! Заряжай нас всех!",
-    "🌟 Ты пример для подражания!",
 ]
 
 GASLIGHT_PHRASES = [
@@ -77,16 +72,6 @@ GASLIGHT_PHRASES = [
     "🤣 Саня, ты лох! Иди лучше доску продай!",
     "😆 Саня, ну ты и размазня!",
     "😂 Саня, ты меня смешишь!",
-    "😜 Саня, твой результат — это шутка?",
-    "🤪 Саня, ты не серьёзно, надеюсь?",
-    "😏 Саня, даже пингвины больше отжимаются!",
-    "🤣 Саня, ты лох! И это всё?",
-    "😆 Саня, ну ты и слабак!",
-    "😂 Саня, ты разочаровал меня!",
-    "😜 Саня, ты просто посмешище!",
-    "🤪 Саня, твой максимум — мой минимум!",
-    "😏 Саня, ты лох! Купил доску и ноешь!",
-    "🤣 Саня, ты как тряпка!",
 ]
 
 NOTIFICATION_PHRASES = [
@@ -96,20 +81,6 @@ NOTIFICATION_PHRASES = [
     "🏋️ {name} отжался {count}!",
     "🔥 {name} показал класс — {count} раз!",
     "📊 {name} добавил {count} отжиманий!",
-    "⚡ {name} жжёт — {count} отжиманий!",
-    "🎯 {name} меткий — {count} раз!",
-    "💥 {name} взорвал — {count} отжиманий!",
-    "🏆 {name} становится легендой — {count} раз!",
-    "👀 {name} отжимается как зверь — {count} раз!",
-    "📈 {name} прогрессирует — {count} раз!",
-    "🔥 ОГОНЬ! {name} сделал {count}!",
-    "💪 {name} не сдаётся — {count} раз!",
-    "🎉 УРА! {name} отжался {count} раз!",
-    "⚡ {name} зарядил {count} отжиманий!",
-    "🏋️ {name} показал мощь — {count} раз!",
-    "💯 {name} на 100% — {count} отжиманий!",
-    "🔥 {name} горит — {count} раз!",
-    "💪 {name} стал сильнее — {count} раз!",
 ]
 
 # ============================================
@@ -118,11 +89,13 @@ NOTIFICATION_PHRASES = [
 HERO_GREETINGS = [
     "🏆 Дмитрий! Ты наш герой! Добро пожаловать в битву!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня\n/reset — сбросить мои результаты\n/getid — узнать свой ID",
     "💪 О, Дмитрий! Ты пришёл показать всем, как надо делать!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
+    "🌟 Дмитрий! Ты звезда! Свети ярко!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
 ]
 
 OTHER_GREETINGS = [
     "😏 Ну, Саня, ты лох! Пришёл посмотреть, как делают настоящие мужчины?\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня\n/reset — сбросить мои результаты\n/getid — узнать свой ID",
     "🤣 Саня, ты реально думал, что у тебя получится?\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
+    "😆 О, Саня! Лошара в деле! Ну давай, удиви нас!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
 ]
 
 # ============================================
@@ -149,61 +122,7 @@ async def start(message: types.Message):
         await message.answer(random.choice(OTHER_GREETINGS))
 
 # ============================================
-# 9. ОБРАБОТКА ЧИСЕЛ
-# ============================================
-@dp.message()
-async def handle_numbers(message: types.Message):
-    try:
-        count = int(message.text.strip())
-        if count <= 0:
-            await message.answer("❌ Число должно быть больше 0!")
-            return
-        if count > 1000:
-            await message.answer("😱 Слишком много! Максимум 1000.")
-            return
-    except ValueError:
-        await message.answer("❌ Отправь число, например 30!")
-        return
-
-    user_id = message.from_user.id
-    username = message.from_user.username or ""
-    name = message.from_user.first_name
-    today = datetime.now().strftime("%Y-%m-%d")
-
-    cursor.execute(
-        "INSERT INTO users (user_id, username, name, count, date) VALUES (?, ?, ?, ?, ?)",
-        (user_id, username, name, count, today)
-    )
-    conn.commit()
-
-    cursor.execute(
-        "SELECT SUM(count) FROM users WHERE user_id = ? AND date = ?",
-        (user_id, today)
-    )
-    today_total = cursor.fetchone()[0] or 0
-
-    if username == "Dmitriy_Tonkih":
-        phrase = random.choice(MOTIVATION_PHRASES)
-    else:
-        phrase = random.choice(GASLIGHT_PHRASES)
-
-    await message.answer(
-        f"✅ +{count} ОТЖИМАНИЙ!\n"
-        f"{phrase}\n"
-        f"📅 СЕГОДНЯ: {today_total} ОТЖИМАНИЙ"
-    )
-
-    # Уведомление администратору
-    try:
-        await bot.send_message(
-            ADMIN_ID,
-            random.choice(NOTIFICATION_PHRASES).format(name=name, count=count)
-        )
-    except:
-        pass
-
-# ============================================
-# 10. КОМАНДА /allstats
+# 9. КОМАНДА /allstats
 # ============================================
 @dp.message(Command("allstats"))
 async def all_stats(message: types.Message):
@@ -229,7 +148,7 @@ async def all_stats(message: types.Message):
     await message.answer(msg, parse_mode="Markdown")
 
 # ============================================
-# 11. КОМАНДА /top
+# 10. КОМАНДА /top
 # ============================================
 @dp.message(Command("top"))
 async def top(message: types.Message):
@@ -283,7 +202,7 @@ async def top(message: types.Message):
     await message.answer(msg, parse_mode="Markdown")
 
 # ============================================
-# 12. КОМАНДА /mystats
+# 11. КОМАНДА /mystats
 # ============================================
 @dp.message(Command("mystats"))
 async def my_stats(message: types.Message):
@@ -312,7 +231,7 @@ async def my_stats(message: types.Message):
     )
 
 # ============================================
-# 13. КОМАНДА /today
+# 12. КОМАНДА /today
 # ============================================
 @dp.message(Command("today"))
 async def today_stats(message: types.Message):
@@ -336,7 +255,7 @@ async def today_stats(message: types.Message):
     await message.answer(msg, parse_mode="Markdown")
 
 # ============================================
-# 14. КОМАНДА /reset
+# 13. КОМАНДА /reset
 # ============================================
 @dp.message(Command("reset"))
 async def reset_stats(message: types.Message):
@@ -344,6 +263,73 @@ async def reset_stats(message: types.Message):
     cursor.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
     conn.commit()
     await message.answer("🔄 ВСЕ ТВОИ ОТЖИМАНИЯ СБРОШЕНЫ!")
+
+# ============================================
+# 14. ОБРАБОТКА ЧИСЕЛ (ТОЛЬКО ЕСЛИ НЕ КОМАНДА)
+# ============================================
+@dp.message()
+async def handle_numbers(message: types.Message):
+    # Проверяем, что сообщение — это число
+    try:
+        count = int(message.text.strip())
+    except ValueError:
+        await message.answer(
+            "❌ Я понимаю только числа!\n\n"
+            "Пример: 30  → добавить 30\n"
+            "Пример: 17 13 15  → 17+13+15 = 45\n\n"
+            "📌 КОМАНДЫ:\n"
+            "/allstats — статистика всех участников\n"
+            "/top — таблица лидеров\n"
+            "/mystats — моя статистика\n"
+            "/today — результаты за сегодня\n"
+            "/reset — сбросить мои результаты\n"
+            "/getid — узнать свой ID"
+        )
+        return
+
+    if count <= 0:
+        await message.answer("❌ Число должно быть больше 0!")
+        return
+    if count > 1000:
+        await message.answer("😱 Слишком много! Максимум 1000.")
+        return
+
+    user_id = message.from_user.id
+    username = message.from_user.username or ""
+    name = message.from_user.first_name
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    cursor.execute(
+        "INSERT INTO users (user_id, username, name, count, date) VALUES (?, ?, ?, ?, ?)",
+        (user_id, username, name, count, today)
+    )
+    conn.commit()
+
+    cursor.execute(
+        "SELECT SUM(count) FROM users WHERE user_id = ? AND date = ?",
+        (user_id, today)
+    )
+    today_total = cursor.fetchone()[0] or 0
+
+    if username == "Dmitriy_Tonkih":
+        phrase = random.choice(MOTIVATION_PHRASES)
+    else:
+        phrase = random.choice(GASLIGHT_PHRASES)
+
+    await message.answer(
+        f"✅ +{count} ОТЖИМАНИЙ!\n"
+        f"{phrase}\n"
+        f"📅 СЕГОДНЯ: {today_total} ОТЖИМАНИЙ"
+    )
+
+    # Уведомление администратору
+    try:
+        await bot.send_message(
+            ADMIN_ID,
+            random.choice(NOTIFICATION_PHRASES).format(name=name, count=count)
+        )
+    except:
+        pass
 
 # ============================================
 # 15. ЗАПУСК БОТА
