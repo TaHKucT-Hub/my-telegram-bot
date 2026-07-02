@@ -5,25 +5,19 @@ import random
 from datetime import datetime, timedelta
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiohttp import web
 
 # ============================================
-# 1. ПОРТ ДЛЯ RENDER
-# ============================================
-PORT = int(os.environ.get("PORT", 10000))
-
-# ============================================
-# 2. ТОКЕН БОТА (ВСТАВЬ СВОЙ!)
+# 1. ТОКЕН БОТА (ВСТАВЬ СВОЙ!)
 # ============================================
 TOKEN = "8952774961:AAE7jBZ2dpam5Tk45ZPnaNUmw3oRd-58LSI"
 
 # ============================================
-# 3. ID ПОЛЬЗОВАТЕЛЯ, КОТОРОМУ ПРИХОДИТ УВЕДОМЛЕНИЕ
+# 2. ID АДМИНИСТРАТОРА (ВСТАВЬ СВОЙ!)
 # ============================================
-ADMIN_ID = Dmitriy_Tonkih  # ЗАМЕНИ НА СВОЙ ID! (узнай через /getid)
+ADMIN_ID = 123456789  # ЗАМЕНИ НА СВОЙ ID!
 
 # ============================================
-# 4. БАЗА ДАННЫХ
+# 3. БАЗА ДАННЫХ
 # ============================================
 conn = sqlite3.connect("pushups.db")
 cursor = conn.cursor()
@@ -41,13 +35,13 @@ CREATE TABLE IF NOT EXISTS users (
 conn.commit()
 
 # ============================================
-# 5. БОТ И ДИСПАТЧЕР
+# 4. СОЗДАЁМ БОТА
 # ============================================
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 # ============================================
-# 6. МОТИВАЦИОННЫЕ ФРАЗЫ (ДЛЯ ГЕРОЯ)
+# 5. ФРАЗЫ
 # ============================================
 MOTIVATION_PHRASES = [
     "💪 Ты машина! Так держать!",
@@ -70,71 +64,8 @@ MOTIVATION_PHRASES = [
     "🏆 Ты ставишь рекорды!",
     "⚡ Ты энергия! Заряжай нас всех!",
     "🌟 Ты пример для подражания!",
-    "📈 Ты растешь над собой!",
-    "💪 Ты несокрушим!",
-    "🔥 Твой дух силён!",
-    "🏆 Ты достоин победы!",
-    "🚀 Ты летишь вперёд!",
-    "💯 Ты на высоте!",
-    "👑 Ты король!",
-    "🎉 Ты сделал это!",
-    "😤 Ты мощь!",
-    "💎 Ты уникален!",
-    "🌟 Ты сияешь!",
-    "📈 Ты прогрессируешь!",
-    "💪 Ты непобедим!",
-    "🔥 Ты пламя!",
-    "🏆 Ты победитель!",
-    "🚀 Ты космос!",
-    "💯 Ты совершенство!",
-    "👑 Ты властелин!",
-    "🎉 Ты праздник!",
-    "😤 Ты ураган!",
-    "💪 Ты легенда!",
-    "🔥 Ты вулкан!",
-    "🏆 Ты триумфатор!",
-    "⚡ Ты молния!",
-    "🎯 Ты мастер!",
-    "💯 Ты идеал!",
-    "🚀 Ты ракета!",
-    "👑 Ты император!",
-    "🎉 Ты фейерверк!",
-    "😤 Ты титан!",
-    "💎 Ты бриллиант!",
-    "🌟 Ты сверхновая!",
-    "📈 Ты восходишь!",
-    "💪 Ты сталь!",
-    "🔥 Ты костёр!",
-    "🏆 Ты герой!",
-    "🚀 Ты скорость!",
-    "💯 Ты максимум!",
-    "👑 Ты монарх!",
-    "🎉 Ты салют!",
-    "😤 Ты гром!",
-    "💎 Ты сокровище!",
-    "🌟 Ты свет!",
-    "📈 Ты поднимаешься!",
-    "💪 Ты мощь!",
-    "🔥 Ты жар!",
-    "🏆 Ты кубок!",
-    "🚀 Ты взлёт!",
-    "💯 Ты стопроцент!",
-    "👑 Ты правитель!",
-    "🎉 Ты торжество!",
-    "😤 Ты буря!",
-    "💎 Ты ценность!",
-    "🌟 Ты надежда!",
-    "📈 Ты рост!",
-    "💪 Ты сила!",
-    "🔥 Ты пламенный!",
-    "🏆 Ты трофей!",
-    "🚀 Ты старт!",
-    "💯 Ты всё!",
 ]
 
-# ============================================
-# 7. ГАЗЛАЙТ-ФРАЗЫ (ДЛЯ ВСЕХ ОСТАЛЬНЫХ)
-# ============================================
 GASLIGHT_PHRASES = [
     "😏 Саня, ты лох! Это всё, на что ты способен?",
     "🤣 Саня, ну ты и лох! Купил доску и не отжимаешься!",
@@ -156,51 +87,8 @@ GASLIGHT_PHRASES = [
     "🤪 Саня, твой максимум — мой минимум!",
     "😏 Саня, ты лох! Купил доску и ноешь!",
     "🤣 Саня, ты как тряпка!",
-    "😆 Саня, ну ты и лошара!",
-    "😂 Саня, ты меня убиваешь своей слабостью!",
-    "😜 Саня, ты даже 100 не сможешь!",
-    "🤪 Саня, ты лох! Проверено!",
-    "😏 Саня, твои отжимания — это смешно!",
-    "🤣 Саня, ты лох! Иди лучше чипсы ешь!",
-    "😆 Саня, ну ты и неудачник!",
-    "😂 Саня, ты просто умора!",
-    "😜 Саня, ты слабее моей бабушки!",
-    "🤪 Саня, ты лох! Смирись!",
-    "😏 Саня, ты лох! Это всё?",
-    "🤣 Саня, ну ты и лох! Позор!",
-    "😆 Саня, фуууу... лошара!",
-    "😂 Саня, ты серьёзно?",
-    "😜 Саня, даже я больше делаю!",
-    "🤪 Саня, ты позорище!",
-    "😏 Саня, слабо?",
-    "🤣 Саня, ты лох! Иди доску продай!",
-    "😆 Саня, ну ты и размазня!",
-    "😂 Саня, ты меня смешишь!",
-    "😜 Саня, твой результат — шутка?",
-    "🤪 Саня, ты не серьёзно?",
-    "😏 Саня, даже пингвины больше!",
-    "🤣 Саня, ты лох! И это всё?",
-    "😆 Саня, ну ты и слабак!",
-    "😂 Саня, ты разочаровал!",
-    "😜 Саня, ты просто посмешище!",
-    "🤪 Саня, твой максимум — мой минимум!",
-    "😏 Саня, ты лох! Купил доску и ноешь!",
-    "🤣 Саня, ты как тряпка!",
-    "😆 Саня, ну ты и лошара!",
-    "😂 Саня, ты меня убиваешь!",
-    "😜 Саня, ты даже 100 не сможешь!",
-    "🤪 Саня, ты лох! Проверено!",
-    "😏 Саня, твои отжимания — смешно!",
-    "🤣 Саня, ты лох! Иди чипсы ешь!",
-    "😆 Саня, ну ты и неудачник!",
-    "😂 Саня, ты просто умора!",
-    "😜 Саня, ты слабее моей бабушки!",
-    "🤪 Саня, ты лох! Смирись!",
 ]
 
-# ============================================
-# 8. УВЕДОМЛЕНИЯ ДЛЯ АДМИНИСТРАТОРА
-# ============================================
 NOTIFICATION_PHRASES = [
     "📢 ВНИМАНИЕ! {name} отжался {count} раз!",
     "🔔 {name} сделал {count} отжиманий!",
@@ -222,240 +110,152 @@ NOTIFICATION_PHRASES = [
     "💯 {name} на 100% — {count} отжиманий!",
     "🔥 {name} горит — {count} раз!",
     "💪 {name} стал сильнее — {count} раз!",
-    "📢 {name} не остановить — {count} раз!",
-    "🔔 {name} делает историю — {count} отжиманий!",
-    "💥 {name} удивил всех — {count} раз!",
-    "🏆 {name} лучший — {count} отжиманий!",
-    "👀 ПОСМОТРИТЕ! {name} отжался {count} раз!",
-    "🔥 {name} в ударе — {count} раз!",
-    "💪 {name} мощь — {count} отжиманий!",
-    "⚡ {name} энергия — {count} раз!",
-    "🎯 {name} точность — {count} отжиманий!",
-    "🏋️ {name} сталь — {count} раз!",
 ]
 
 # ============================================
-# 9. ПРИВЕТСТВИЯ (ДЛЯ ГЕРОЯ)
+# 6. ПРИВЕТСТВИЯ
 # ============================================
 HERO_GREETINGS = [
-    "🏆 Дмитрий! Ты наш герой! Добро пожаловать в битву!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня\n/reset — сбросить мои результаты",
+    "🏆 Дмитрий! Ты наш герой! Добро пожаловать в битву!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня\n/reset — сбросить мои результаты\n/getid — узнать свой ID",
     "💪 О, Дмитрий! Ты пришёл показать всем, как надо делать!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "🔥 Дмитрий! Ты легенда! Начинаем соревнование!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "👑 Дмитрий! Король отжиманий в деле!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "🚀 Дмитрий! Ты ракета! Погнали!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "💎 Дмитрий! Ты бриллиант! Сияй!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "🌟 Дмитрий! Ты звезда! Свети ярко!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "⚡ Дмитрий! Ты молния! Бей рекорды!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "🏆 Дмитрий! Триумфатор! Вперёд!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "💪 Дмитрий! Ты сталь! Ничто тебя не сломает!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
 ]
 
-# ============================================
-# 10. ПРИВЕТСТВИЯ (ДЛЯ ВСЕХ ОСТАЛЬНЫХ)
-# ============================================
 OTHER_GREETINGS = [
-    "😏 Ну, Саня, ты лох! Пришёл посмотреть, как делают настоящие мужчины?\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня\n/reset — сбросить мои результаты",
+    "😏 Ну, Саня, ты лох! Пришёл посмотреть, как делают настоящие мужчины?\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня\n/reset — сбросить мои результаты\n/getid — узнать свой ID",
     "🤣 Саня, ты реально думал, что у тебя получится?\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "😆 О, Саня! Лошара в деле! Ну давай, удиви нас!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "😂 Саня, ты как всегда... слабоват!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "😜 Саня, ты серьёзно? Ты пришёл соревноваться?\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "🤪 Саня, ты позорище! Но давай, попробуй!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "😏 Саня, ты лох! Иди лучше доску продай!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "🤣 Саня, ты фууууу... лошара!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "😆 Саня, ты думал, что станешь чемпионом? Ха!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
-    "😂 Саня, ну ты и размазня!\n\n📌 КОМАНДЫ:\n/allstats — статистика всех участников\n/top — таблица лидеров\n/mystats — моя статистика\n/today — результаты за сегодня",
 ]
 
 # ============================================
-# 11. КОМАНДА /getid
+# 7. КОМАНДА /getid
 # ============================================
 @dp.message(Command("getid"))
 async def get_id(message: types.Message):
-    user_id = message.from_user.id
-    username = message.from_user.username or "нет username"
-    name = message.from_user.first_name
     await message.answer(
-        f"📌 **Ваш ID:** `{user_id}`\n"
-        f"👤 Имя: {name}\n"
-        f"🔖 Username: @{username}",
+        f"📌 **Ваш ID:** `{message.from_user.id}`\n"
+        f"👤 Имя: {message.from_user.first_name}\n"
+        f"🔖 Username: @{message.from_user.username or 'нет'}",
         parse_mode="Markdown"
     )
 
 # ============================================
-# 12. ОБРАБОТКА /start
+# 8. КОМАНДА /start
 # ============================================
 @dp.message(Command("start"))
 async def start(message: types.Message):
     username = message.from_user.username or ""
-    
     if username == "Dmitriy_Tonkih":
         await message.answer(random.choice(HERO_GREETINGS))
     else:
         await message.answer(random.choice(OTHER_GREETINGS))
 
 # ============================================
-# 13. ОБРАБОТКА ЧИСЕЛ
+# 9. ОБРАБОТКА ЧИСЕЛ
 # ============================================
 @dp.message()
 async def handle_numbers(message: types.Message):
-    text = message.text.strip()
-    parts = text.split()
-    
-    # Проверяем, что все части — числа
-    numbers = []
-    for part in parts:
-        if part.isdigit():
-            numbers.append(int(part))
-        else:
-            await message.answer(
-                "❌ Я понимаю только числа!\n\n"
-                "Пример: 30  → добавить 30\n"
-                "Пример: 17 13 15  → 17+13+15 = 45"
-            )
+    try:
+        count = int(message.text.strip())
+        if count <= 0:
+            await message.answer("❌ Число должно быть больше 0!")
             return
-    
-    if not numbers:
-        await message.answer("❌ Отправь хотя бы одно число!")
+        if count > 1000:
+            await message.answer("😱 Слишком много! Максимум 1000.")
+            return
+    except ValueError:
+        await message.answer("❌ Отправь число, например 30!")
         return
-    
-    for num in numbers:
-        if num <= 0:
-            await message.answer("❌ Числа должны быть больше 0!")
-            return
-        if num > 1000:
-            await message.answer(f"😱 {num} слишком много! Максимум 1000.")
-            return
-    
-    total_count = sum(numbers)
+
     user_id = message.from_user.id
     username = message.from_user.username or ""
     name = message.from_user.first_name
     today = datetime.now().strftime("%Y-%m-%d")
-    
-    # Сохраняем в базу
-    for count in numbers:
-        cursor.execute(
-            "INSERT INTO users (user_id, username, name, count, date) VALUES (?, ?, ?, ?, ?)",
-            (user_id, username, name, count, today)
-        )
+
+    cursor.execute(
+        "INSERT INTO users (user_id, username, name, count, date) VALUES (?, ?, ?, ?, ?)",
+        (user_id, username, name, count, today)
+    )
     conn.commit()
-    
-    # Считаем сегодняшний итог
+
     cursor.execute(
         "SELECT SUM(count) FROM users WHERE user_id = ? AND date = ?",
         (user_id, today)
     )
     today_total = cursor.fetchone()[0] or 0
-    
-    # Выбираем фразу в зависимости от пользователя
+
     if username == "Dmitriy_Tonkih":
         phrase = random.choice(MOTIVATION_PHRASES)
     else:
         phrase = random.choice(GASLIGHT_PHRASES)
-    
-    # Ответ пользователю
-    if len(numbers) == 1:
-        await message.answer(
-            f"✅ +{total_count} ОТЖИМАНИЙ!\n"
-            f"{phrase}\n"
-            f"📅 СЕГОДНЯ: {today_total} ОТЖИМАНИЙ"
-        )
-    else:
-        numbers_str = " + ".join(str(n) for n in numbers)
-        await message.answer(
-            f"✅ {numbers_str} = {total_count} ОТЖИМАНИЙ!\n"
-            f"{phrase}\n"
-            f"📅 СЕГОДНЯ: {today_total} ОТЖИМАНИЙ"
-        )
-    
-    # ============================================
-    # ОТПРАВЛЯЕМ УВЕДОМЛЕНИЕ АДМИНИСТРАТОРУ
-    # ============================================
+
+    await message.answer(
+        f"✅ +{count} ОТЖИМАНИЙ!\n"
+        f"{phrase}\n"
+        f"📅 СЕГОДНЯ: {today_total} ОТЖИМАНИЙ"
+    )
+
+    # Уведомление администратору
     try:
-        notification = random.choice(NOTIFICATION_PHRASES).format(
-            name=name,
-            count=total_count
+        await bot.send_message(
+            ADMIN_ID,
+            random.choice(NOTIFICATION_PHRASES).format(name=name, count=count)
         )
-        await bot.send_message(ADMIN_ID, notification)
-    except Exception as e:
-        print(f"❌ Ошибка отправки уведомления: {e}")
+    except:
+        pass
 
 # ============================================
-# 14. КОМАНДА /allstats (НОВАЯ!)
+# 10. КОМАНДА /allstats
 # ============================================
 @dp.message(Command("allstats"))
-async def show_all_stats(message: types.Message):
-    # Получаем общую статистику по всем участникам за всё время
+async def all_stats(message: types.Message):
     cursor.execute("""
-        SELECT 
-            name,
-            SUM(count) as total,
-            COUNT(DISTINCT date) as days
-        FROM users 
-        GROUP BY user_id 
-        ORDER BY total DESC
+        SELECT name, SUM(count) as total, COUNT(DISTINCT date) as days
+        FROM users GROUP BY user_id ORDER BY total DESC
     """)
     results = cursor.fetchall()
-    
+
     if not results:
-        await message.answer("📭 Пока никто не добавил ни одного отжимания!")
+        await message.answer("📭 Пока никто не отжимался!")
         return
-    
-    # Считаем общее количество отжиманий
+
     total_all = sum(row[1] for row in results)
-    
     msg = "📊 **ОБЩАЯ СТАТИСТИКА ВСЕХ УЧАСТНИКОВ** 📊\n\n"
     msg += f"👥 Всего участников: {len(results)}\n"
     msg += f"💪 Всего отжиманий: {total_all}\n\n"
-    
-    # Медали для топ-3
-    medals = ["🥇", "🥈", "🥉"]
-    
+
     for i, (name, total, days) in enumerate(results, 1):
-        medal = medals[i-1] if i <= 3 else f"{i}."
+        medal = ["🥇", "🥈", "🥉"][i-1] if i <= 3 else f"{i}."
         msg += f"{medal} {name} — {total} раз (за {days} дн.)\n"
-    
+
     await message.answer(msg, parse_mode="Markdown")
 
 # ============================================
-# 15. КОМАНДА /top
+# 11. КОМАНДА /top
 # ============================================
 @dp.message(Command("top"))
-async def show_top(message: types.Message):
+async def top(message: types.Message):
     today = datetime.now().strftime("%Y-%m-%d")
     week_ago = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
-    
+
     cursor.execute("""
-        SELECT name, SUM(count) as total 
-        FROM users 
-        WHERE date = ? 
-        GROUP BY user_id 
-        ORDER BY total DESC 
-        LIMIT 10
+        SELECT name, SUM(count) as total
+        FROM users WHERE date = ? GROUP BY user_id ORDER BY total DESC LIMIT 10
     """, (today,))
     today_res = cursor.fetchall()
 
     cursor.execute("""
-        SELECT name, SUM(count) as total 
-        FROM users 
-        WHERE date >= ? 
-        GROUP BY user_id 
-        ORDER BY total DESC 
-        LIMIT 10
+        SELECT name, SUM(count) as total
+        FROM users WHERE date >= ? GROUP BY user_id ORDER BY total DESC LIMIT 10
     """, (week_ago,))
     week_res = cursor.fetchall()
 
     cursor.execute("""
-        SELECT name, SUM(count) as total 
-        FROM users 
-        GROUP BY user_id 
-        ORDER BY total DESC 
-        LIMIT 10
+        SELECT name, SUM(count) as total
+        FROM users GROUP BY user_id ORDER BY total DESC LIMIT 10
     """)
     all_res = cursor.fetchall()
 
     msg = "🏆 **ТАБЛИЦА ЛИДЕРОВ** 🏆\n\n"
-    
+
     msg += f"📅 **Сегодня** ({today}):\n"
     if today_res:
         for i, (name, total) in enumerate(today_res[:3], 1):
@@ -463,7 +263,7 @@ async def show_top(message: types.Message):
             msg += f"{m} {name} — {total}\n"
     else:
         msg += "📭 Сегодня никто не занимался\n"
-    
+
     msg += f"\n📆 **За неделю**:\n"
     if week_res:
         for i, (name, total) in enumerate(week_res[:3], 1):
@@ -471,7 +271,7 @@ async def show_top(message: types.Message):
             msg += f"{m} {name} — {total}\n"
     else:
         msg += "📭 За неделю никто не занимался\n"
-    
+
     msg += f"\n🏆 **За всё время**:\n"
     if all_res:
         for i, (name, total) in enumerate(all_res[:3], 1):
@@ -483,7 +283,7 @@ async def show_top(message: types.Message):
     await message.answer(msg, parse_mode="Markdown")
 
 # ============================================
-# 16. КОМАНДА /mystats
+# 12. КОМАНДА /mystats
 # ============================================
 @dp.message(Command("mystats"))
 async def my_stats(message: types.Message):
@@ -499,8 +299,7 @@ async def my_stats(message: types.Message):
 
     cursor.execute("SELECT SUM(count) FROM users WHERE user_id = ?", (user_id,))
     all_total = cursor.fetchone()[0] or 0
-    
-    # Количество дней
+
     cursor.execute("SELECT COUNT(DISTINCT date) FROM users WHERE user_id = ?", (user_id,))
     days_count = cursor.fetchone()[0] or 0
 
@@ -513,18 +312,15 @@ async def my_stats(message: types.Message):
     )
 
 # ============================================
-# 17. КОМАНДА /today
+# 13. КОМАНДА /today
 # ============================================
 @dp.message(Command("today"))
 async def today_stats(message: types.Message):
     today = datetime.now().strftime("%Y-%m-%d")
-    
+
     cursor.execute("""
-        SELECT name, SUM(count) as total 
-        FROM users 
-        WHERE date = ? 
-        GROUP BY user_id 
-        ORDER BY total DESC
+        SELECT name, SUM(count) as total
+        FROM users WHERE date = ? GROUP BY user_id ORDER BY total DESC
     """, (today,))
     results = cursor.fetchall()
 
@@ -536,11 +332,11 @@ async def today_stats(message: types.Message):
     for i, (name, total) in enumerate(results, 1):
         m = ["🥇", "🥈", "🥉"][i-1] if i <= 3 else f"{i}."
         msg += f"{m} {name} — {total} отжиманий\n"
-    
+
     await message.answer(msg, parse_mode="Markdown")
 
 # ============================================
-# 18. КОМАНДА /reset
+# 14. КОМАНДА /reset
 # ============================================
 @dp.message(Command("reset"))
 async def reset_stats(message: types.Message):
@@ -550,29 +346,11 @@ async def reset_stats(message: types.Message):
     await message.answer("🔄 ВСЕ ТВОИ ОТЖИМАНИЯ СБРОШЕНЫ!")
 
 # ============================================
-# 19. ВЕБ-СЕРВЕР ДЛЯ RENDER
-# ============================================
-async def health_check(request):
-    return web.Response(text="Бот работает!")
-
-async def start_web_server():
-    app = web.Application()
-    app.router.add_get('/', health_check)
-    runner = web.AppRunner(app)
-    await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.0', PORT)
-    await site.start()
-    print(f"🌐 Веб-сервер запущен на порту {PORT}")
-
-# ============================================
-# 20. ЗАПУСК БОТА
+# 15. ЗАПУСК БОТА
 # ============================================
 async def main():
     print("🚀 БОТ ЗАПУЩЕН!")
-    print(f"📱 ОТПРАВЛЯЙ ЧИСЛА: 30 ИЛИ 17 13 15")
-    print("📊 /allstats — статистика всех участников")
-    
-    asyncio.create_task(start_web_server())
+    print("📱 ОТПРАВЛЯЙ ЧИСЛА: 30 ИЛИ 17 13 15")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
